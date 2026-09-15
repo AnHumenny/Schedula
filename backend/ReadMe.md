@@ -1,8 +1,8 @@
 
 ### Schedula
-#### — BackendFastAPI + SQLAlchemy 2.0 (async) + Alembic + PostgreSQL + Pydantic v2.
+#### BackendFastAPI + SQLAlchemy 2.0 (async) + Alembic + PostgreSQL + Pydantic v2.
 
-Tech StackPython 3.11+FastAPI — HTTP layer and automatic OpenAPI documentationSQLAlchemy 2.0 (async) — ORM and database operations
+Tech StackPython 3.13+FastAPI — HTTP layer and automatic OpenAPI documentationSQLAlchemy 2.0 (async) — ORM and database operations
 Alembic — Database migrationsPostgreSQL — Primary databasePydantic v2 — Data validation and serialization
 Uvicorn — ASGI serverpython-jose / passlib — JWT and password hashing
 Project Structure
