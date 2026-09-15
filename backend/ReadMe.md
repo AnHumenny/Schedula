@@ -1,26 +1,4 @@
 
-
-```app/
-├── app/
-│   ├── core/                  # Core configuration, database, security, and dependencies
-│   └── modules/               # Feature-based domain modules
-│       ├── auth/              # Authentication and login endpoints
-│       ├── directions/        # Academic directions
-│       ├── disciplines/       # Study disciplines
-│       ├── groups/            # Student groups
-│       ├── locations/         # Buildings and rooms infrastructure
-│       ├── profiles/          # User profiles
-│       ├── schedule/          # Timetable and lesson items
-│       ├── teachers/          # Faculty management
-│       └── users/             # User accounts and role management
-
-├── .env                       # Environment variables configuration
-├── .gitignore                 # Git ignored files configuration
-├── alembic.ini                # Alembic migration settings
-├── main.py                    # FastAPI application entry point
-└── ReadMe.md                  # Project documentation
-```
-
 ### Schedula
 #### — BackendFastAPI + SQLAlchemy 2.0 (async) + Alembic + PostgreSQL + Pydantic v2.
 
