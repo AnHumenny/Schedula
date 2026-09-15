@@ -1,30 +1,8 @@
 
-
-```app/
-├── app/
-│   ├── core/                  # Core configuration, database, security, and dependencies
-│   └── modules/               # Feature-based domain modules
-│       ├── auth/              # Authentication and login endpoints
-│       ├── directions/        # Academic directions
-│       ├── disciplines/       # Study disciplines
-│       ├── groups/            # Student groups
-│       ├── locations/         # Buildings and rooms infrastructure
-│       ├── profiles/          # User profiles
-│       ├── schedule/          # Timetable and lesson items
-│       ├── teachers/          # Faculty management
-│       └── users/             # User accounts and role management
-
-├── .env                       # Environment variables configuration
-├── .gitignore                 # Git ignored files configuration
-├── alembic.ini                # Alembic migration settings
-├── main.py                    # FastAPI application entry point
-└── ReadMe.md                  # Project documentation
-```
-
 ### Schedula
-#### — BackendFastAPI + SQLAlchemy 2.0 (async) + Alembic + PostgreSQL + Pydantic v2.
+#### BackendFastAPI + SQLAlchemy 2.0 (async) + Alembic + PostgreSQL + Pydantic v2.
 
-Tech StackPython 3.11+FastAPI — HTTP layer and automatic OpenAPI documentationSQLAlchemy 2.0 (async) — ORM and database operations
+Tech StackPython 3.13+FastAPI — HTTP layer and automatic OpenAPI documentationSQLAlchemy 2.0 (async) — ORM and database operations
 Alembic — Database migrationsPostgreSQL — Primary databasePydantic v2 — Data validation and serialization
 Uvicorn — ASGI serverpython-jose / passlib — JWT and password hashing
 Project Structure
@@ -85,11 +63,11 @@ cd backend
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # Linux/macOS
-.venv\Scripts\activate           # Windows```
+.venv\Scripts\activate           # Windows
 ```
 Install Dependencies
 ```Bash
-pip install -r requirements.txt ```
+pip install -r requirements.txt 
 ```
 
 Configure Environment
