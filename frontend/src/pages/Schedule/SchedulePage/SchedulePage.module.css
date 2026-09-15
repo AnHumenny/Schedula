@@ -1,0 +1,79 @@
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter {
+  align-self: end;
+}
+
+.dayGroup {
+  margin-bottom: 24px;
+}
+
+.dayTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  background: var(--color-bg);
+  font-weight: 500;
+}
+
+.table td {
+  padding: 10px 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.timeCell {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+}
+
+.tagPrimary {
+  background: #e0ecff;
+  color: var(--color-primary);
+}
+
+.tagWarning {
+  background: #fff4e0;
+  color: var(--color-warning);
+}
+
+.tagDanger {
+  background: #ffe5e5;
+  color: var(--color-danger);
+}

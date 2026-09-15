@@ -1,0 +1,60 @@
+.page {
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.username {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.footer {
+  padding: 10px 16px;
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.author {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.author:hover {
+  color: var(--color-primary);
+}
+
+.author svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.author:hover svg {
+  opacity: 1;
+}

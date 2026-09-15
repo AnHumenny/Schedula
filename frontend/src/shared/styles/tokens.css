@@ -1,0 +1,60 @@
+:root {
+  --color-bg: #f4f5f7;
+  --color-bg-elevated: #ffffff;
+  --color-bg-glass: rgba(255, 255, 255, 0.96);
+  --color-bg-glass-strong: rgba(255, 255, 255, 0.99);
+  --color-bg-glass-dark: rgba(28, 28, 32, 0.9);
+
+  --graphite-50:  #f7f7f8;
+  --graphite-100: #ececef;
+  --graphite-200: #d9dadf;
+  --graphite-300: #b8bac2;
+  --graphite-400: #8e9099;
+  --graphite-500: #6b6d76;
+  --graphite-600: #4b4d55;
+  --graphite-700: #34363d;
+  --graphite-800: #23252b;
+  --graphite-900: #16171b;
+
+  --color-border: #e2e3e7;
+  --color-border-strong: #c8c9cf;
+
+  --color-text: #1c1d21;
+  --color-text-muted: #6b6d76;
+
+  --color-primary: #34363d;
+  --color-primary-hover: #16171b;
+  --color-primary-soft: rgba(35, 37, 43, 0.08);
+  --color-danger: #b0392e;
+  --color-danger-soft: rgba(176, 57, 46, 0.08);
+  --color-success: #3a7d44;
+  --color-warning: #a26a1f;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --shadow-sm: 0 1px 2px rgba(20, 20, 25, 0.05);
+  --shadow-md: 0 2px 6px rgba(20, 20, 25, 0.08);
+  --shadow-lg: 0 4px 12px rgba(20, 20, 25, 0.1);
+  --shadow-focus: 0 0 0 3px rgba(35, 37, 43, 0.1);
+
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --dur-fast: 100ms;
+  --dur-base: 160ms;
+  --dur-slow: 240ms;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}

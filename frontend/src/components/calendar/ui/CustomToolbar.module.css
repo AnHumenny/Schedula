@@ -1,0 +1,37 @@
+.toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.btnActive {
+  font-weight: 600;
+  background: var(--graphite-100);
+}
+
+.label {
+  margin-left: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 160px;
+  text-align: center;
+}
+
+.views {
+  margin-left: 12px;
+  display: flex;
+  gap: 4px;
+}

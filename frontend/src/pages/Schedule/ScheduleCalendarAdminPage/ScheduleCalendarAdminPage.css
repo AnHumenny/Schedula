@@ -1,0 +1,83 @@
+.calendar-page {
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rbc-toolbar-label {
+  text-transform: capitalize;
+}
+
+.rbc-header {
+  min-height: 32px !important;
+  padding: 6px 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+.rbc-time-header .rbc-row-bg {
+  height: 1px !important;
+  min-height: 1px !important;
+  flex: 0 0 1px !important;
+}
+
+.rbc-time-header .rbc-row:last-child {
+  display: none !important;
+}
+
+.rbc-time-header .rbc-allday-cell,
+.rbc-time-header-content .rbc-allday-cell {
+  height: 0 !important;
+  min-height: 0 !important;
+  flex: 0 0 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table {
+  display: table !important;
+  width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table thead {
+  display: table-header-group !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table tbody {
+  display: table-row-group !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table tr {
+  display: table-row !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table th,
+.rbc-agenda-view table.rbc-agenda-table td {
+  display: table-cell !important;
+  padding: 10px 12px !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  text-align: left !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table th:nth-child(1),
+.rbc-agenda-view table.rbc-agenda-table td:nth-child(1) {
+  width: 160px !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table th:nth-child(2),
+.rbc-agenda-view table.rbc-agenda-table td:nth-child(2) {
+  width: 120px !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table th:nth-child(3),
+.rbc-agenda-view table.rbc-agenda-table td:nth-child(3) {
+  width: auto !important;
+  white-space: normal !important;
+}

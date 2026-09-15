@@ -1,0 +1,128 @@
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.layout__sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--color-bg-elevated);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-4) 0;
+}
+
+.layout__brand {
+  padding: 0 var(--space-4) var(--space-4);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-primary);
+}
+
+.layout__nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__link {
+  padding: 10px var(--space-4);
+  color: var(--color-text);
+  font-size: 14px;
+  border-left: 3px solid transparent;
+}
+
+.layout__link:hover {
+  background: var(--color-bg);
+  text-decoration: none;
+}
+
+.layout__link--active {
+  border-left-color: var(--color-primary);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.layout__content {
+  min-height: 100vh;
+}
+
+.layout__brand {
+  padding: 0 var(--space-4) var(--space-4);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-primary);
+}
+.layout__nav { display: flex; flex-direction: column; }
+.layout__link {
+  padding: 10px var(--space-4);
+  color: var(--color-text);
+  font-size: 14px;
+  border-left: 3px solid transparent;
+}
+.layout__link:hover { background: var(--color-bg); text-decoration: none; }
+.layout__link--active {
+  border-left-color: var(--color-primary);
+  background: var(--color-bg);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.layout__sidebar {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--color-bg-elevated);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-4) 0;
+}
+
+.layout__nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.layout__footer {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layout__user {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layout__logout {
+  width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-elevated);
+  cursor: pointer;
+}
+
+.layout__author {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.layout__author:hover {
+  color: var(--color-primary);
+}
