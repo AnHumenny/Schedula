@@ -63,11 +63,11 @@ cd backend
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # Linux/macOS
-.venv\Scripts\activate           # Windows```
+.venv\Scripts\activate           # Windows
 ```
 Install Dependencies
 ```Bash
-pip install -r requirements.txt ```
+pip install -r requirements.txt 
 ```
 
 Configure Environment
