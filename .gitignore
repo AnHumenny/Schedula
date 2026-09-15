@@ -1,0 +1,132 @@
+# =========================
+# Environment / local config
+# =========================
+.env
+.env.*
+!.env.example
+.env.production
+
+*.local
+
+# =========================
+# Virtual environments
+# =========================
+venv/
+env/
+.env/
+.venv/
+env.bak/
+venv.bak/
+
+# =========================
+# Dependencies
+# =========================
+node_modules/
+*.egg-info/
+
+# =========================
+# Build
+# =========================
+dist/
+dist-ssr/
+build/
+versions/
+.vite/
+
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# =========================
+# Logs / temporary files
+# =========================
+*.log
+logs/
+*.pot
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+*.pid
+
+# =========================
+# IDE
+# =========================
+.idea/
+.vscode/
+!.vscode/extensions.json
+
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Coverage / caches
+# =========================
+coverage/
+*.coverage
+.coverage.*
+*.hypothesis/
+.cache/
+
+# =========================
+# TypeScript
+# =========================
+tsconfig.tsbuildinfo
+
+# =========================
+# Python / packaging
+# =========================
+*.egg
+*.spec
+
+# =========================
+# Configuration files
+# =========================
+*.json
+*.yml
+*.yaml
+*.ini
+
+# Keep package manifests
+!package.json
+!package-lock.json
+!admin/package.json
+!admin/package-lock.json
+!shared/package.json
+
+# =========================
+# Databases
+# =========================
+*.db
+*.sql
+
+# =========================
+# Static / local media
+# =========================
+/static/products/
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+
+# =========================
+# Application scripts
+# =========================
+app/scripts/
