@@ -72,7 +72,7 @@ class ScheduleService:
 
     async def list_items(
             self,
-            limit: int = 50,
+            limit: int = 100,
             offset: int = 0,
     ) -> List[ScheduleItemRead]:
         """Retrieve a list of schedule items with pagination."""
@@ -205,4 +205,14 @@ class ScheduleService:
             teacher_id=teacher_id,
             limit=limit,
         )
+        return [self._to_read(i) for i in items]
+
+
+    async def get_range(
+            self,
+            start: datetime,
+            end: datetime,
+    ) -> List[ScheduleItemRead]:
+        """Fetch schedule items within the given date range and convert them to read models."""
+        items = await self.repo.get_range(start, end)
         return [self._to_read(i) for i in items]

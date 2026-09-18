@@ -25,7 +25,7 @@ class ScheduleRepository:
         return (await self.session.execute(q)).scalar_one_or_none()
 
 
-    async def list(self, limit: int = 50, offset: int = 0) -> List[ScheduleItem]:
+    async def list(self, limit: int = 100, offset: int = 0) -> List[ScheduleItem]:
         """Retrieve a list of schedule items with pagination."""
         q = (
             select(ScheduleItem)
@@ -134,3 +134,26 @@ class ScheduleRepository:
             q = q.where(ScheduleItem.teacher_id == teacher_id)
 
         return list((await self.session.execute(q)).scalars().all())
+
+
+    async def get_range(
+            self,
+            start: datetime,
+            end: datetime,
+    ) -> List[ScheduleItem]:
+        """Retrieve schedule items whose start time falls within the given range."""
+        q = (
+            select(ScheduleItem)
+            .where(
+                ScheduleItem.start_datetime >= start,
+                ScheduleItem.start_datetime < end,
+            )
+            .options(selectinload(ScheduleItem.groups))
+            .order_by(ScheduleItem.start_datetime)
+        )
+
+        return list(
+            (await self.session.execute(q))
+            .scalars()
+            .all()
+        )

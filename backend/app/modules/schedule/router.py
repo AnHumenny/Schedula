@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
@@ -65,13 +66,26 @@ async def get_teacher_schedule(
 @router.get("/", response_model=List[ScheduleItemRead])
 async def list_schedule(
     request: Request,
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(100, ge=1, le=200),
     offset: int = Query(0, ge=0),
     service: ScheduleService = Depends(get_schedule_service),
     _: User = Depends(get_current_user),
 ):
     """Retrieve a list of all schedule items with pagination."""
     return await service.list_items(limit, offset)
+
+
+@limiter.limit(RateLimits.READ)
+@router.get("/range", response_model=List[ScheduleItemRead])
+async def get_schedule_range(
+    request: Request,
+    start: datetime = Query(..., description="ISO 8601 with timezone"),
+    end: datetime = Query(..., description="ISO 8601 with timezone"),
+    service: ScheduleService = Depends(get_schedule_service),
+    _: User = Depends(get_current_user),
+):
+    """Get schedule items within the specified date range."""
+    return await service.get_range(start, end)
 
 
 @limiter.limit(RateLimits.READ)

@@ -8,6 +8,7 @@ import moment from "moment";
 import { scheduleApi } from "../../shared/api";
 import { colorForTeacher } from "../../shared/utils/colors";
 import { messages, formats } from "./lib/constants";
+import { getCalendarRange } from "./lib/getCalendarRange";
 import { useCalendarLookups } from "./hooks/useCalendarLookups";
 import {
   useCalendarEvents,
@@ -45,16 +46,40 @@ export const CalendarView: React.FC<Props> = ({ mode }) => {
   const isAdmin = mode === "admin";
   const lookups = useCalendarLookups();
 
+  const range = useMemo(
+    () => getCalendarRange(date, currentView),
+    [date, currentView]
+  );
+
   const schedule = useQuery({
-    queryKey: ["schedule", { filterGroupId, filterTeacherId }],
+    queryKey: [
+      "schedule",
+      "range",
+      range.start,
+      range.end,
+    ],
     queryFn: () =>
-      scheduleApi.list({
-        group_id: filterGroupId ? Number(filterGroupId) : undefined,
-        teacher_id: filterTeacherId ? Number(filterTeacherId) : undefined,
+      scheduleApi.range({
+        start: range.start,
+        end: range.end,
       }),
+    staleTime: 60_000,
   });
 
-  const events = useCalendarEvents(schedule.data ?? [], lookups);
+  const rawEvents = useCalendarEvents(schedule.data ?? [], lookups);
+
+  const events = useMemo(() => {
+    let result = rawEvents;
+    if (filterGroupId) {
+      const gid = Number(filterGroupId);
+      result = result.filter((e) => e.resource.item.group_ids.includes(gid));
+    }
+    if (filterTeacherId) {
+      const tid = Number(filterTeacherId);
+      result = result.filter((e) => e.resource.item.teacher_id === tid);
+    }
+    return result;
+  }, [rawEvents, filterGroupId, filterTeacherId]);
 
   useEffect(() => {
     const onResize = () => {
