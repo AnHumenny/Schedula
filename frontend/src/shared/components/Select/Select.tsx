@@ -15,6 +15,7 @@ interface Props {
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  error?: string;
 }
 
 export const Select: React.FC<Props> = ({
@@ -26,15 +27,17 @@ export const Select: React.FC<Props> = ({
   required,
   disabled,
   className,
+  error,
 }) => (
   <label className={`${styles.field} ${className ?? ""}`}>
     {label && <span className={styles.label}>{label}</span>}
     <select
-      className={styles.select}
+      className={`${styles.select} ${error ? styles.selectError : ""}`}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={required}
       disabled={disabled}
+      aria-invalid={error ? true : undefined}
     >
       {placeholder && <option value="">{placeholder}</option>}
       {options.map((o) => (
@@ -43,5 +46,6 @@ export const Select: React.FC<Props> = ({
         </option>
       ))}
     </select>
+    {error && <span className={styles.errorText}>{error}</span>}
   </label>
 );

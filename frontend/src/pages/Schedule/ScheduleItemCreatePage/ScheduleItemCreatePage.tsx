@@ -99,6 +99,12 @@ export const ScheduleItemCreatePage: React.FC<Props> = ({ onClose }) => {
   const [status, setStatus] = useState<LessonStatus>("PLANNED");
   const [description, setDescription] = useState("");
 
+  const [errors, setErrors] = useState<{
+    disciplineId?: string;
+    teacherId?: string;
+    roomId?: string;
+  }>({});
+
   const teachers = useQuery({
     queryKey: ["teachers"],
     queryFn: () => teachersApi.list(),
@@ -148,6 +154,18 @@ export const ScheduleItemCreatePage: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleSubmit = () => {
+    const nextErrors: typeof errors = {};
+
+    if (!disciplineId) nextErrors.disciplineId = "Выберите дисциплину";
+    if (!teacherId) nextErrors.teacherId = "Выберите преподавателя";
+    if (!roomId) nextErrors.roomId = "Выберите аудиторию";
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+
+    setErrors({});
     createMut.mutate({
       start_datetime: fromLocalInput(startLocal),
       end_datetime: fromLocalInput(endLocal),
@@ -191,36 +209,48 @@ export const ScheduleItemCreatePage: React.FC<Props> = ({ onClose }) => {
       </div>
 
       <Select
-        label="Дисциплина"
+        label="Дисциплина *"
         value={disciplineId}
-        onChange={setDisciplineId}
+        onChange={(v) => {
+          setDisciplineId(v);
+          if (v) setErrors((e) => ({ ...e, disciplineId: undefined }));
+        }}
         placeholder="— выберите дисциплину —"
         options={(disciplines.data ?? []).map((d) => ({
           value: d.id,
           label: d.name,
         }))}
+        error={errors.disciplineId}
       />
 
       <Select
-        label="Преподаватель"
+        label="Преподаватель *"
         value={teacherId}
-        onChange={setTeacherId}
+        onChange={(v) => {
+          setTeacherId(v);
+          if (v) setErrors((e) => ({ ...e, teacherId: undefined }));
+        }}
         placeholder="— выберите преподавателя —"
         options={(teachers.data ?? []).map((t) => ({
           value: t.id,
           label: t.fullname,
         }))}
+        error={errors.teacherId}
       />
 
       <Select
-        label="Аудитория"
+        label="Аудитория *"
         value={roomId}
-        onChange={setRoomId}
+        onChange={(v) => {
+          setRoomId(v);
+          if (v) setErrors((e) => ({ ...e, roomId: undefined }));
+        }}
         placeholder="— выберите аудиторию —"
         options={(rooms.data ?? []).map((r) => ({
           value: r.id,
           label: roomLabel(r.id),
         }))}
+        error={errors.roomId}
       />
 
       <CheckboxGroup
