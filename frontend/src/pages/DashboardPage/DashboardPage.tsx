@@ -38,8 +38,8 @@ export const DashboardPage: React.FC = () => {
   const rooms = useQuery({ queryKey: ["rooms"], queryFn: () => roomsApi.list() });
 
   const upcoming = useQuery({
-    queryKey: ["schedule", "upcoming", { days: 7, limit: 5 }],
-    queryFn: () => scheduleApi.upcoming({ days: 7, limit: 5 }),
+    queryKey: ["schedule", "upcoming", { days: 1 }],
+    queryFn: () => scheduleApi.upcoming({ days: 1 }),
   });
 
   const disciplineById = useMemo(

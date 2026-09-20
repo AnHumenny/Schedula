@@ -1,28 +1,50 @@
 import React from "react";
-import type { Group, Teacher } from "../../../shared/types";
+import type { Group, Teacher, Direction } from "../../../shared/types";
 import styles from "./CalendarFilters.module.css";
 
 interface Props {
   groups: Group[];
   teachers: Teacher[];
+  directions: Direction[];
   filterGroupId: string;
   filterTeacherId: string;
+  filterDirectionId: string;
   onChangeGroup: (v: string) => void;
   onChangeTeacher: (v: string) => void;
+  onChangeDirection: (v: string) => void;
 }
 
 export const CalendarFilters: React.FC<Props> = ({
   groups,
   teachers,
+  directions,
   filterGroupId,
   filterTeacherId,
+  filterDirectionId,
   onChangeGroup,
   onChangeTeacher,
+  onChangeDirection,
 }) => {
-  const hasFilter = filterGroupId || filterTeacherId;
+  const hasFilter = filterGroupId || filterTeacherId || filterDirectionId;
 
   return (
     <div className={styles.wrap}>
+      <label className={styles.field}>
+        <span className={styles.label}>Направление</span>
+        <select
+          className={styles.select}
+          value={filterDirectionId}
+          onChange={(e) => onChangeDirection(e.target.value)}
+        >
+          <option value="">-----------------</option>
+          {directions.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
+          ))}
+        </select>
+      </label>
+
       <label className={styles.field}>
         <span className={styles.label}>Группа</span>
         <select
@@ -67,6 +89,7 @@ export const CalendarFilters: React.FC<Props> = ({
           onClick={() => {
             onChangeGroup("");
             onChangeTeacher("");
+            onChangeDirection("");
           }}
         >
           Сбросить

@@ -39,6 +39,7 @@ export const CalendarView: React.FC<Props> = ({ mode }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [filterGroupId, setFilterGroupId] = useState("");
   const [filterTeacherId, setFilterTeacherId] = useState("");
+  const [filterDirectionId, setFilterDirectionId] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
   );
@@ -46,23 +47,29 @@ export const CalendarView: React.FC<Props> = ({ mode }) => {
   const isAdmin = mode === "admin";
   const lookups = useCalendarLookups();
 
+  const hasDirection = filterDirectionId !== "";
+
+  const groupDirectionById = useMemo(
+    () =>
+      new Map(
+        (lookups.groups.data ?? []).map((g) => [g.id, g.direction_id])
+      ),
+    [lookups.groups.data]
+  );
+
   const range = useMemo(
     () => getCalendarRange(date, currentView),
     [date, currentView]
   );
 
   const schedule = useQuery({
-    queryKey: [
-      "schedule",
-      "range",
-      range.start,
-      range.end,
-    ],
+    queryKey: ["schedule", "range", range.start, range.end],
     queryFn: () =>
       scheduleApi.range({
         start: range.start,
         end: range.end,
       }),
+    enabled: hasDirection,
     staleTime: 60_000,
   });
 
@@ -78,8 +85,22 @@ export const CalendarView: React.FC<Props> = ({ mode }) => {
       const tid = Number(filterTeacherId);
       result = result.filter((e) => e.resource.item.teacher_id === tid);
     }
+    if (filterDirectionId) {
+      const did = Number(filterDirectionId);
+      result = result.filter((e) =>
+        e.resource.item.group_ids.some(
+          (gid) => groupDirectionById.get(gid) === did
+        )
+      );
+    }
     return result;
-  }, [rawEvents, filterGroupId, filterTeacherId]);
+  }, [
+    rawEvents,
+    filterGroupId,
+    filterTeacherId,
+    filterDirectionId,
+    groupDirectionById,
+  ]);
 
   useEffect(() => {
     const onResize = () => {
@@ -166,99 +187,109 @@ export const CalendarView: React.FC<Props> = ({ mode }) => {
       <CalendarFilters
         groups={lookups.groups.data ?? []}
         teachers={lookups.teachers.data ?? []}
+        directions={lookups.directions.data ?? []}
         filterGroupId={filterGroupId}
         filterTeacherId={filterTeacherId}
+        filterDirectionId={filterDirectionId}
         onChangeGroup={setFilterGroupId}
         onChangeTeacher={setFilterTeacherId}
+        onChangeDirection={setFilterDirectionId}
       />
 
-      {schedule.isLoading && (
+      {schedule.isLoading && hasDirection && (
         <div className={styles.center}>⏳ Загрузка…</div>
       )}
 
-      {schedule.isError && (
+      {schedule.isError && hasDirection && (
         <div className={`${styles.center} ${styles.error}`}>
           ❌ Ошибка: {(schedule.error as Error).message}
         </div>
       )}
 
-      {!schedule.isLoading && !schedule.isError && (
-        <>
-          {events.length === 0 ? (
-            <div className={styles.center}>
-              <p style={{ fontSize: 18 }}>📭 Занятий пока нет</p>
-              <p style={{ fontSize: 14 }}>
-                Выберите другую группу или преподавателя
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className={styles.calendarWrap}>
-                <Calendar
-                  localizer={localizer}
-                  events={events}
-                  startAccessor="start"
-                  endAccessor="end"
-                  eventPropGetter={eventPropGetter}
-                  components={{
-                    event: renderEvent,
-                    toolbar: CustomToolbar,
-                    header: CustomDayHeader,
-                  }}
-                  formats={formats}
-                  style={{ height: "100%" }}
-                  date={date}
-                  onNavigate={(newDate) => setDate(newDate)}
-                  view={currentView}
-                  onView={setCurrentView}
-                  views={["month", "week", "day", "agenda"]}
-                  messages={messages}
-                  popup
-                  min={new Date(0, 0, 0, 8, 0, 0)}
-                  max={new Date(0, 0, 0, 20, 0, 0)}
-                  step={5}
-                  timeslots={12}
-                  selectable={isAdmin}
-                  onSelectSlot={
-                    isAdmin
-                      ? ({ start }) => {
-                          const iso = moment(start).format(
-                            "YYYY-MM-DDTHH:mm"
-                          );
-                          navigate(
-                            `/schedule/create?start=${encodeURIComponent(
-                              iso
-                            )}`
-                          );
-                        }
-                      : undefined
-                  }
-                  onSelectEvent={(event) =>
-                    setSelectedEvent(event as CalendarEvent)
-                  }
-                />
+      {!hasDirection ? (
+        <div className={styles.center}>
+          <p style={{ fontSize: 18 }}>Чтобы увидеть расписание, выберите направление обучения</p>
+        </div>
+      ) : (
+        !schedule.isLoading &&
+        !schedule.isError && (
+          <>
+            {events.length === 0 ? (
+              <div className={styles.center}>
+                <p style={{ fontSize: 18 }}>Занятий пока нет</p>
+                <p style={{ fontSize: 14 }}>
+                  Попробуйте выбрать другую группу или преподавателя
+                </p>
               </div>
+            ) : (
+              <>
+                <div className={styles.calendarWrap}>
+                  <Calendar
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    eventPropGetter={eventPropGetter}
+                    components={{
+                      event: renderEvent,
+                      toolbar: CustomToolbar,
+                      header: CustomDayHeader,
+                    }}
+                    formats={formats}
+                    style={{ height: "100%" }}
+                    date={date}
+                    onNavigate={(newDate) => setDate(newDate)}
+                    view={currentView}
+                    onView={setCurrentView}
+                    views={["month", "week", "day", "agenda"]}
+                    messages={messages}
+                    popup
+                    min={new Date(0, 0, 0, 8, 0, 0)}
+                    max={new Date(0, 0, 0, 20, 0, 0)}
+                    step={5}
+                    timeslots={12}
+                    selectable={isAdmin}
+                    onSelectSlot={
+                      isAdmin
+                        ? ({ start }) => {
+                            const iso = moment(start).format(
+                              "YYYY-MM-DDTHH:mm"
+                            );
+                            navigate(
+                              `/schedule/create?start=${encodeURIComponent(
+                                iso
+                              )}`
+                            );
+                          }
+                        : undefined
+                    }
+                    onSelectEvent={(event) =>
+                      setSelectedEvent(event as CalendarEvent)
+                    }
+                  />
+                </div>
 
-              <CalendarLegend
-                teachers={teachersInEvents}
-                isMobile={isMobile}
-              />
+                <CalendarLegend
+                  teachers={teachersInEvents}
+                  isMobile={isMobile}
+                />
 
-              <CalendarStats
-                total={events.length}
-                planned={counts.planned}
-                rescheduled={counts.rescheduled}
-                cancelled={counts.cancelled}
-                isMobile={isMobile}
-                todayLabel={new Date().toLocaleDateString("ru-RU", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                })}
-              />
-            </>
-          )}
-        </>
+                <CalendarStats
+                  total={events.length}
+                  planned={counts.planned}
+                  rescheduled={counts.rescheduled}
+                  cancelled={counts.cancelled}
+                  isMobile={isMobile}
+                  todayLabel={new Date().toLocaleDateString("ru-RU", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                />
+              </>
+            )}
+          </>
+        )
       )}
 
       {selectedEvent && (
