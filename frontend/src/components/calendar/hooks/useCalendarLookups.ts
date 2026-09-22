@@ -6,6 +6,7 @@ import {
   disciplinesApi,
   roomsApi,
   buildingsApi,
+  directionsApi,
 } from "../../../shared/api";
 
 export function useCalendarLookups() {
@@ -28,6 +29,10 @@ export function useCalendarLookups() {
   const buildings = useQuery({
     queryKey: ["buildings"],
     queryFn: () => buildingsApi.list(),
+  });
+  const directions = useQuery({
+    queryKey: ["directions"],
+    queryFn: () => directionsApi.list(),
   });
 
   const disciplineById = useMemo(
@@ -63,6 +68,7 @@ export function useCalendarLookups() {
     disciplines,
     rooms,
     buildings,
+    directions,
     disciplineById,
     teacherById,
     groupById,

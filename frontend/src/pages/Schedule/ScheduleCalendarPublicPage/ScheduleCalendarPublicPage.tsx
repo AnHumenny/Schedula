@@ -13,7 +13,7 @@ export const ScheduleCalendarPublicPage: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.replace("/schedule/calendar");
+    window.location.replace("/login");
   };
 
   return (

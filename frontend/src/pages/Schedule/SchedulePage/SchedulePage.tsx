@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { scheduleApi, groupsApi, teachersApi } from "../../../shared/api";
+import { scheduleApi, groupsApi, teachersApi, directionsApi } from "../../../shared/api";
 import {
   LESSON_TYPE_LABELS,
   LESSON_STATUS_LABELS,
@@ -29,6 +29,7 @@ const dayKey = (iso: string) => iso.slice(0, 10);
 
 export const SchedulePage: React.FC = () => {
   const lookups = useLookups();
+  const [filterDirectionId, setFilterDirectionId] = useState<string>("");
   const [groupId, setGroupId] = useState<string>("");
   const [teacherId, setTeacherId] = useState<string>("");
 
@@ -39,6 +40,10 @@ export const SchedulePage: React.FC = () => {
   const teachersQuery = useQuery({
     queryKey: ["teachers"],
     queryFn: () => teachersApi.list(),
+  });
+  const directionsQuery = useQuery({
+    queryKey: ["directions"],
+    queryFn: () => directionsApi.list(),
   });
 
   const schedule = useQuery({
@@ -52,14 +57,41 @@ export const SchedulePage: React.FC = () => {
       }),
   });
 
+  const groupDirectionById = useMemo(
+    () =>
+      new Map(
+        (groupsQuery.data ?? []).map((g) => [g.id, g.direction_id])
+      ),
+    [groupsQuery.data]
+  );
+
   const items: ScheduleItem[] = schedule.data ?? [];
+
+  const filtered = useMemo(() => {
+    let result = items;
+    if (groupId) {
+      const gid = Number(groupId);
+      result = result.filter((i) => i.group_ids.includes(gid));
+    }
+    if (teacherId) {
+      const tid = Number(teacherId);
+      result = result.filter((i) => i.teacher_id === tid);
+    }
+    if (filterDirectionId) {
+      const did = Number(filterDirectionId);
+      result = result.filter((i) =>
+        i.group_ids.some((gid) => groupDirectionById.get(gid) === did)
+      );
+    }
+    return result;
+  }, [items, groupId, teacherId, filterDirectionId, groupDirectionById]);
 
   const sorted = useMemo(
     () =>
-      items
+      filtered
         .slice()
         .sort((a, b) => a.start_datetime.localeCompare(b.start_datetime)),
-    [items]
+    [filtered]
   );
 
   const grouped = useMemo(() => {
@@ -76,7 +108,8 @@ export const SchedulePage: React.FC = () => {
   const weekAhead = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     .toLocaleDateString("ru-RU");
 
-  const hasFilter = groupId || teacherId;
+  const hasDirection = filterDirectionId !== "";
+  const hasFilter = groupId || teacherId || filterDirectionId;
 
   return (
     <div className="page">
@@ -87,6 +120,17 @@ export const SchedulePage: React.FC = () => {
       </PageHeader>
 
       <div className={styles.filters}>
+        <Select
+          label="Направление"
+          value={filterDirectionId}
+          onChange={(v) => setFilterDirectionId(v)}
+          placeholder="Все направления"
+          options={(directionsQuery.data ?? []).map((d) => ({
+            value: d.id,
+            label: d.name,
+          }))}
+        />
+
         <Select
           label="Группа"
           value={groupId}
@@ -119,6 +163,7 @@ export const SchedulePage: React.FC = () => {
           <Button
             className={styles.filter}
             onClick={() => {
+              setFilterDirectionId("");
               setGroupId("");
               setTeacherId("");
             }}
@@ -137,78 +182,96 @@ export const SchedulePage: React.FC = () => {
         <p className="error">Ошибка: {(schedule.error as Error).message}</p>
       )}
 
-      {!schedule.isLoading && grouped.length === 0 && (
-        <div className="card">
-          <p className="muted">
-            Занятий в ближайшие 7 дней по выбранным фильтрам нет.
-          </p>
-        </div>
+      {!schedule.isLoading && !schedule.isError && (
+        <>
+          {!hasDirection && !groupId && !teacherId ? (
+            <div className="card">
+              <p className="muted">
+                Выберите направление, группу или преподавателя.
+              </p>
+            </div>
+          ) : grouped.length === 0 ? (
+            <div className="card">
+              <p className="muted">
+                Занятий в ближайшие 7 дней по выбранным фильтрам нет.
+              </p>
+            </div>
+          ) : (
+            grouped.map(([d, list]) => (
+              <div key={d} className={styles.dayGroup}>
+                <h2 className={styles.dayTitle}>{fmtDay(d)}</h2>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>Время</th>
+                      <th>Дисциплина</th>
+                      <th>Преподаватель</th>
+                      <th>Группы</th>
+                      <th>Аудитория</th>
+                      <th>Тип</th>
+                      <th>Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {list.map((item) => (
+                      <tr key={item.id}>
+                        <td className={styles.timeCell}>
+                          {fmtTime(item.start_datetime)}–
+                          {fmtTime(item.end_datetime)}
+                        </td>
+                        <td>
+                          {lookups.disciplineById.get(item.discipline_id) ??
+                            `Дисциплина #${item.discipline_id}`}
+                          {item.description && (
+                            <div className="muted" style={{ fontSize: 12 }}>
+                              {item.description}
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          {lookups.teacherById.get(item.teacher_id) ??
+                            `Преподаватель #${item.teacher_id}`}
+                        </td>
+                        <td>
+                          {item.group_ids
+                            .map(
+                              (id) =>
+                                lookups.groupById.get(id) ?? `#${id}`
+                            )
+                            .join(", ") || "—"}
+                        </td>
+                        <td>{lookups.roomLabel(item.room_id)}</td>
+                        <td>
+                          <span
+                            className={`${styles.tag} ${styles.tagPrimary}`}
+                          >
+                            {LESSON_TYPE_LABELS[item.lesson_type] ??
+                              item.lesson_type}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={`${styles.tag} ${
+                              item.status === "CANCELLED"
+                                ? styles.tagDanger
+                                : item.status === "RESCHEDULED"
+                                ? styles.tagWarning
+                                : ""
+                            }`}
+                          >
+                            {LESSON_STATUS_LABELS[item.status] ??
+                              item.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))
+          )}
+        </>
       )}
-
-      {grouped.map(([d, list]) => (
-        <div key={d} className={styles.dayGroup}>
-          <h2 className={styles.dayTitle}>{fmtDay(d)}</h2>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Время</th>
-                <th>Дисциплина</th>
-                <th>Преподаватель</th>
-                <th>Группы</th>
-                <th>Аудитория</th>
-                <th>Тип</th>
-                <th>Статус</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.map((item) => (
-                <tr key={item.id}>
-                  <td className={styles.timeCell}>
-                    {fmtTime(item.start_datetime)}–{fmtTime(item.end_datetime)}
-                  </td>
-                  <td>
-                    {lookups.disciplineById.get(item.discipline_id) ??
-                      `Дисциплина #${item.discipline_id}`}
-                    {item.description && (
-                      <div className="muted" style={{ fontSize: 12 }}>
-                        {item.description}
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    {lookups.teacherById.get(item.teacher_id) ??
-                      `Преподаватель #${item.teacher_id}`}
-                  </td>
-                  <td>
-                    {item.group_ids
-                      .map((id) => lookups.groupById.get(id) ?? `#${id}`)
-                      .join(", ") || "—"}
-                  </td>
-                  <td>{lookups.roomLabel(item.room_id)}</td>
-                  <td>
-                    <span className={`${styles.tag} ${styles.tagPrimary}`}>
-                      {LESSON_TYPE_LABELS[item.lesson_type] ?? item.lesson_type}
-                    </span>
-                  </td>
-                  <td>
-                    <span
-                      className={`${styles.tag} ${
-                        item.status === "CANCELLED"
-                          ? styles.tagDanger
-                          : item.status === "RESCHEDULED"
-                          ? styles.tagWarning
-                          : ""
-                      }`}
-                    >
-                      {LESSON_STATUS_LABELS[item.status] ?? item.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
     </div>
   );
 };

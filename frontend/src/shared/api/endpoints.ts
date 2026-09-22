@@ -106,7 +106,8 @@ export const roomsApi = {
 };
 
 export const scheduleApi = {
-  list: (params: { group_id?: number; teacher_id?: number; limit?: number; offset?: number } = {}) => {
+  list: (params: { group_id?: number; teacher_id?: number; direction_id?: number; limit?: number; offset?: number;
+      } = {}) => {
     if (params.group_id) {
       return api.get<ScheduleItem[]>(`/schedule/group/${params.group_id}`).then((r) => r.data);
     }
@@ -116,12 +117,14 @@ export const scheduleApi = {
     return api.get<ScheduleItem[]>("/schedule/").then((r) => r.data);
   },
 
-  range: (params: { start: string; end: string; group_id?: number; teacher_id?: number }) =>
+  range: (params: { start: string; end: string; group_id?: number; teacher_id?: number; direction_id?: number;
+    }) =>
     api
       .get<ScheduleItem[]>("/schedule/range", { params })
       .then((r) => r.data),
 
-  upcoming: (params: { days?: number; group_id?: number; teacher_id?: number; limit?: number } = {}) =>
+  upcoming: (params: { days?: number; group_id?: number; teacher_id?: number; direction_id?: number; limit?: number;
+    } = {}) =>
     api.get<ScheduleItem[]>("/schedule/upcoming", { params }).then((r) => r.data),
 
   get: (id: number) => api.get<ScheduleItem>(`/schedule/${id}`).then((r) => r.data),
