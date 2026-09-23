@@ -2,11 +2,12 @@ BEGIN;        -- TODO: при переносе в FastAPI убрать, тран
 
 WITH settings AS (
     SELECT
-        -- TODO: при переносе в FastAPI заменить на параметры:
-        -- CAST(:source_start AS DATE) AS source_start,
-        -- CAST(:source_end AS DATE) AS source_end,
-        -- :weeks_to_copy AS weeks_to_copy,
-        -- :direction_id AS direction_id,
+
+        -- TODO: при переносе в FastAPI использовать параметры
+        -- source_start
+        -- source_end
+        -- weeks_to_copy
+        -- direction_id
 
         DATE '2026-09-14' AS source_start,
         DATE '2026-09-21' AS source_end,
