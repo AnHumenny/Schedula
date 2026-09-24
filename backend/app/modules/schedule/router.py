@@ -4,11 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from app.core.deps import get_current_user, require_admin
 from app.core.rate_limiter import limiter, RateLimits
+from app.modules.schedule.schedule_operations_repository import ScheduleOperationsRepository
 from app.modules.schedule.schemas import (
-    ScheduleItemCreate, ScheduleItemUpdate, ScheduleItemRead
+    ScheduleItemCreate, ScheduleItemUpdate, ScheduleItemRead, ScheduleCopyByGroupRequest,
+    ScheduleCopyByDirectionRequest
 )
 from app.modules.schedule.service import ScheduleService
-from app.modules.schedule.dependencies import get_schedule_service
+from app.modules.schedule.dependencies import get_schedule_service, get_schedule_operation_repository
 from app.modules.users.models import User
 
 router = APIRouter(prefix="/schedule", tags=["schedule"])
@@ -147,3 +149,35 @@ async def delete_item(
         await service.delete_item(item_id)
     except ValueError as e:
         raise HTTPException(404, str(e))
+
+
+@limiter.limit(RateLimits.GROUP_OPERATION)
+@router.post("/schedule/copy/group")
+async def copy_schedule_by_group(
+    request: Request,
+    data: ScheduleCopyByGroupRequest,
+    repo: ScheduleOperationsRepository = Depends(get_schedule_operation_repository),
+    _: User = Depends(require_admin),
+) -> None:
+    await repo.copy_by_group(
+        source_start=data.source_start,
+        source_end=data.source_end,
+        weeks_to_copy=data.weeks_to_copy,
+        group_id=data.group_id,
+    )
+
+
+@limiter.limit(RateLimits.GROUP_OPERATION)
+@router.post("/schedule/copy/copy_by_direction")
+async def copy_schedule_by_direction(
+    request: Request,
+    data: ScheduleCopyByDirectionRequest,
+    repo: ScheduleOperationsRepository = Depends(get_schedule_operation_repository),
+    _: User = Depends(require_admin),
+) -> None:
+    await repo.copy_by_direction(
+        source_start=data.source_start,
+        source_end=data.source_end,
+        weeks_to_copy=data.weeks_to_copy,
+        direction_id=data.direction_id,
+    )

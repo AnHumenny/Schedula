@@ -1,4 +1,4 @@
-from typing import Any, AsyncGenerator
+from typing import AsyncGenerator
 from sqlalchemy.orm import DeclarativeBase
 from app.core.config import settings
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
@@ -16,14 +16,16 @@ class Base(DeclarativeBase):
     pass
 
 
-async def get_session() -> AsyncGenerator[AsyncSession | Any, Any]:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """FastAPI dependency that provides a database session.
 
-    Creates a new async database session for each request and automatically
-    closes it when the request is complete. Used as a dependency in route handlers.
-
-    Yields:
-        AsyncSession: An active database session for the current request context."""
-
+    Creates a new async database session for each request, commits on success
+    and rolls back on exception, then closes the session.
+    """
     async with AsyncSessionLocal() as session:
-        yield session
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
