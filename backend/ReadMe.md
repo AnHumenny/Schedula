@@ -28,6 +28,7 @@ Plaintext.
 │       ├── directions/
 │       ├── disciplines/
 │       ├── schedule/
+│       │   └── queries/     # batch processing SQL queries
 │       └── locations/
 │           ├── buildings/
 │           └── rooms/
