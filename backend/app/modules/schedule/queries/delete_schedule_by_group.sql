@@ -1,12 +1,12 @@
-BEGIN;        -- TODO: при переносе в FastAPI убрать, транзакцией будет управлять AsyncSession
+-- Deprecated: retained for manual testing only.
+-- Retained only for manual testing.
+-- The working logic has been moved to FastAPI.
+-- Parameters and transaction are now handled at the application level.
+
+BEGIN;
 
 WITH settings AS (
     SELECT
-        -- TODO: при переносе в FastAPI использовать параметры
-        -- source_start
-        -- source_end
-        -- weeks_to_copy
-        -- group_id
 
         DATE '2026-09-21' AS source_start,
         DATE '2027-03-21' AS source_end,
@@ -61,4 +61,4 @@ WHERE s.id IN (
 );
 
 
-COMMIT;       -- TODO: при переносе в FastAPI убрать, транзакцией будет управлять AsyncSession
+COMMIT;

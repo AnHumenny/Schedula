@@ -1,6 +1,9 @@
-from datetime import date
+from datetime import date, datetime, time, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
+from sqlalchemy import text, exists, select
+
+from app.modules.groups.models import Group
+from app.modules.schedule.models import ScheduleItem
 
 
 class ScheduleOperationsRepository:
@@ -187,3 +190,61 @@ class ScheduleOperationsRepository:
             JOIN public.schedule_audience AS sa
                 ON sa.schedule_item_id = m.old_id;
         """))
+
+
+    async def delete_by_group(
+            self,
+            start_date: date,
+            weeks_to_delete: int,
+            group_id: int,
+    ) -> None:
+        """Delete schedule items for a group starting from the specified date."""
+
+        start = datetime.combine(start_date, time.min)
+        end = start + timedelta(weeks=weeks_to_delete)
+
+        query = (
+            select(ScheduleItem)
+            .join(ScheduleItem.groups)
+            .where(
+                Group.id == group_id,
+                ScheduleItem.start_datetime >= start,
+                ScheduleItem.start_datetime < end,
+            )
+        )
+
+        items = (await self.session.scalars(query)).unique().all()
+
+        for item in items:
+            await self.session.delete(item)
+
+        await self.session.flush()
+
+
+    async def delete_by_direction(
+            self,
+            start_date: date,
+            weeks_to_delete: int,
+            direction_id: int,
+    ) -> None:
+        """Delete schedule items for a direction starting from the specified date."""
+
+        start = datetime.combine(start_date, time.min)
+        end = start + timedelta(weeks=weeks_to_delete)
+
+        query = (
+            select(ScheduleItem)
+            .join(ScheduleItem.groups)
+            .where(
+                Group.direction_id == direction_id,
+                ScheduleItem.start_datetime >= start,
+                ScheduleItem.start_datetime < end,
+            )
+        )
+
+        items = (await self.session.scalars(query)).unique().all()
+
+        for item in items:
+            await self.session.delete(item)
+
+        await self.session.flush()

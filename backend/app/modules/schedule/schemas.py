@@ -64,3 +64,19 @@ class ScheduleCopyByGroupRequest(ScheduleCopyBase):
 class ScheduleCopyByDirectionRequest(ScheduleCopyBase):
     """Schema for copying schedule by direction."""
     direction_id: int = Field(..., description="Direction ID")
+
+
+class ScheduleDeleteByGroupRequest(BaseModel):
+    """Schema for deleting schedule by group."""
+
+    start_date: date = Field(..., description="Start date of the source period")
+    weeks_to_delete: int = Field(..., description="Number of weeks to delete")
+    group_id: int = Field(..., description="Group ID")
+
+
+class ScheduleDeleteByDirectionRequest(BaseModel):
+    """Schema for deleting schedule by direction."""
+
+    start_date: date = Field(..., description="Start date of the source period")
+    weeks_to_delete: int = Field(..., description="Number of weeks to delete")
+    direction_id: int = Field(..., description="Direction ID")

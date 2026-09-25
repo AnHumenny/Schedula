@@ -7,7 +7,7 @@ from app.core.rate_limiter import limiter, RateLimits
 from app.modules.schedule.schedule_operations_repository import ScheduleOperationsRepository
 from app.modules.schedule.schemas import (
     ScheduleItemCreate, ScheduleItemUpdate, ScheduleItemRead, ScheduleCopyByGroupRequest,
-    ScheduleCopyByDirectionRequest
+    ScheduleCopyByDirectionRequest, ScheduleDeleteByDirectionRequest, ScheduleDeleteByGroupRequest
 )
 from app.modules.schedule.service import ScheduleService
 from app.modules.schedule.dependencies import get_schedule_service, get_schedule_operation_repository
@@ -99,6 +99,7 @@ async def get_item(
     _: User = Depends(get_current_user),
 ):
     """Retrieve a specific schedule item by its ID."""
+
     try:
         return await service.get_item(item_id)
     except ValueError as e:
@@ -114,6 +115,7 @@ async def create_item(
     _: User = Depends(require_admin),
 ):
     """Create a new schedule item (admin only)."""
+
     try:
         return await service.create_item(data)
     except ValueError as e:
@@ -130,6 +132,7 @@ async def update_item(
     _: User = Depends(require_admin),
 ):
     """Update an existing schedule item (admin only)."""
+
     try:
         return await service.update_item(item_id, data)
     except ValueError as e:
@@ -145,6 +148,7 @@ async def delete_item(
     _: User = Depends(require_admin),
 ):
     """Delete a schedule item by its ID (admin only)."""
+
     try:
         await service.delete_item(item_id)
     except ValueError as e:
@@ -179,5 +183,39 @@ async def copy_schedule_by_direction(
         source_start=data.source_start,
         source_end=data.source_end,
         weeks_to_copy=data.weeks_to_copy,
+        direction_id=data.direction_id,
+    )
+
+
+@limiter.limit(RateLimits.GROUP_OPERATION)
+@router.post("/schedule/delete/group")
+async def delete_schedule_by_group(
+    request: Request,
+    data: ScheduleDeleteByGroupRequest,
+    repo: ScheduleOperationsRepository = Depends(
+        get_schedule_operation_repository,
+    ),
+    _: User = Depends(require_admin),
+) -> None:
+    await repo.delete_by_group(
+        start_date=data.start_date,
+        weeks_to_delete=data.weeks_to_delete,
+        group_id=data.group_id,
+    )
+
+
+@limiter.limit(RateLimits.GROUP_OPERATION)
+@router.post("/schedule/delete/direction")
+async def delete_schedule_by_direction(
+    request: Request,
+    data: ScheduleDeleteByDirectionRequest,
+    repo: ScheduleOperationsRepository = Depends(
+        get_schedule_operation_repository,
+    ),
+    _: User = Depends(require_admin),
+) -> None:
+    await repo.delete_by_direction(
+        start_date=data.start_date,
+        weeks_to_delete=data.weeks_to_delete,
         direction_id=data.direction_id,
     )

@@ -23,5 +23,5 @@ async def get_schedule_service(
 async def get_schedule_operation_repository(
     session: AsyncSession = Depends(get_session),
 ) -> ScheduleOperationsRepository:
-    """Dependency provider for the ScheduleRepository."""
+    """Dependency provider for ScheduleOperationsRepository."""
     return ScheduleOperationsRepository(session)
