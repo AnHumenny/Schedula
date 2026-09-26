@@ -58,6 +58,7 @@ class RateLimits:
     AUTH = settings.RATE_LIMIT_AUTH
     WRITE = settings.RATE_LIMIT_WRITE
     READ = settings.RATE_LIMIT_READ
+    GROUP_OPERATION = settings.RATE_LIMIT_GROUP_OPERATION
     HEALTH = settings.RATE_LIMIT_HEALTH
 
 

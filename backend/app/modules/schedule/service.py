@@ -14,6 +14,7 @@ from app.modules.schedule.models import ScheduleItem
 
 def _naive(dt: datetime) -> datetime:
     """Convert datetime to naive UTC."""
+
     if dt.tzinfo is not None:
         return dt.astimezone(timezone.utc).replace(tzinfo=None)
     return dt
@@ -47,6 +48,7 @@ class ScheduleService:
 
     async def _resolve_groups(self, group_ids: list[int]):
         """Load groups by their IDs."""
+
         if not group_ids:
             return []
         from app.modules.groups.models import Group
@@ -64,6 +66,7 @@ class ScheduleService:
 
     async def get_item(self, item_id: int) -> ScheduleItemRead:
         """Retrieve a schedule item by its ID."""
+
         item = await self.repo.get_by_id(item_id)
         if not item:
             raise ValueError("Schedule item not found")
@@ -76,6 +79,7 @@ class ScheduleService:
             offset: int = 0,
     ) -> List[ScheduleItemRead]:
         """Retrieve a list of schedule items with pagination."""
+
         items = await self.repo.list(limit, offset)
         return [self._to_read(i) for i in items]
 
@@ -84,6 +88,7 @@ class ScheduleService:
             self, group_id: int, limit: int = 50, offset: int = 0
     ) -> List[ScheduleItemRead]:
         """Retrieve the schedule for a specific group."""
+
         items = await self.repo.get_by_group(group_id, limit, offset)
         return [self._to_read(i) for i in items]
 
@@ -92,12 +97,14 @@ class ScheduleService:
             self, teacher_id: int, limit: int = 50, offset: int = 0
     ) -> List[ScheduleItemRead]:
         """Retrieve the schedule for a specific teacher."""
+
         items = await self.repo.get_by_teacher(teacher_id, limit, offset)
         return [self._to_read(i) for i in items]
 
 
     async def create_item(self, data: ScheduleItemCreate) -> ScheduleItemRead:
         """Create a new schedule item."""
+
         start = _naive(data.start_datetime)
         end = _naive(data.end_datetime)
 
@@ -126,6 +133,7 @@ class ScheduleService:
             data: ScheduleItemUpdate,
     ) -> ScheduleItemRead:
         """Update an existing schedule item."""
+
         item = await self.repo.get_by_id(item_id)
         if not item:
             raise ValueError("Schedule item not found")
@@ -162,10 +170,12 @@ class ScheduleService:
 
     async def delete_item(self, item_id: int) -> None:
         """Delete a schedule item by its ID."""
+
         item = await self.repo.get_by_id(item_id)
         if not item:
             raise ValueError("Schedule item not found")
         await self.repo.delete(item)
+
 
     async def _check_conflicts(
             self,
@@ -176,6 +186,7 @@ class ScheduleService:
             exclude_id: int | None = None,
     ) -> None:
         """Check for room scheduling conflicts."""
+
         conflicts = await self.repo.get_by_room_and_period(room_id, start, end)
         for c in conflicts:
             if exclude_id and c.id == exclude_id:
@@ -194,6 +205,7 @@ class ScheduleService:
             limit: int = 200,
     ) -> List[ScheduleItemRead]:
         """Retrieve upcoming schedule items for a specified period."""
+
         now = datetime.now()
         start = now.replace(hour=0, minute=0, second=0, microsecond=0)
         end = start + timedelta(days=days)
@@ -214,5 +226,6 @@ class ScheduleService:
             end: datetime,
     ) -> List[ScheduleItemRead]:
         """Fetch schedule items within the given date range and convert them to read models."""
+
         items = await self.repo.get_range(start, end)
         return [self._to_read(i) for i in items]

@@ -17,13 +17,11 @@ if Path(env_file).exists():
 class Settings(BaseSettings):
     """Configuration application SCHEDULER API."""
 
-    # ---------- Shared ----------
     APP_NAME: str = "SCHEDULER API"
     DEBUG: bool = False
     ENABLE_API_DOCS: bool = True
     PORT: int = 8007
 
-    # ---------- JWT ----------
     SECRET_KEY: str = Field(
         ...,
         description="Secret key for JWT signing",
@@ -31,19 +29,16 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24
 
-    # ---------- Database ----------
     DATABASE_URL: str = Field(
         ...,
         description="Database URL (postgresql+asyncpg://...)",
     )
 
-    # ---------- CORS ----------
     ALLOWED_ORIGINS: str = Field(
         default="http://localhost:5174,http://127.0.0.1:5174",
         description="Comma-separated list of allowed CORS origins",
     )
 
-    # ---------- Redis / Rate limiter ----------
     REDIS_URL: Optional[str] = Field(
         default=None,
         description="Redis URL for rate limiter / cache. If None — memory backend.",
@@ -58,7 +53,6 @@ class Settings(BaseSettings):
         default=True,
         description="Enable rate limiting",
     )
-
     DEFAULT_RATE_LIMIT: str = Field(
         default="1000/hour",
         description="Default rate limit for all endpoints",
@@ -74,6 +68,10 @@ class Settings(BaseSettings):
     RATE_LIMIT_READ: str = Field(
         default="100/minute",
         description="Rate limit for read operations",
+    )
+    RATE_LIMIT_GROUP_OPERATION: str = Field(
+        default="5/minute",
+        description="Rate limits for bulk parameter update operations",
     )
     RATE_LIMIT_HEALTH: str = Field(
         default="10/second",
