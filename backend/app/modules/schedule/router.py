@@ -156,7 +156,7 @@ async def delete_item(
 
 
 @limiter.limit(RateLimits.GROUP_OPERATION)
-@router.post("/schedule/copy/group")
+@router.post("copy/group")
 async def copy_schedule_by_group(
     request: Request,
     data: ScheduleCopyByGroupRequest,
@@ -172,7 +172,7 @@ async def copy_schedule_by_group(
 
 
 @limiter.limit(RateLimits.GROUP_OPERATION)
-@router.post("/schedule/copy/copy_by_direction")
+@router.post("/copy/copy_by_direction")
 async def copy_schedule_by_direction(
     request: Request,
     data: ScheduleCopyByDirectionRequest,
@@ -188,7 +188,7 @@ async def copy_schedule_by_direction(
 
 
 @limiter.limit(RateLimits.GROUP_OPERATION)
-@router.post("/schedule/delete/group")
+@router.post("/delete/group")
 async def delete_schedule_by_group(
     request: Request,
     data: ScheduleDeleteByGroupRequest,
@@ -205,7 +205,7 @@ async def delete_schedule_by_group(
 
 
 @limiter.limit(RateLimits.GROUP_OPERATION)
-@router.post("/schedule/delete/direction")
+@router.post("/delete/direction")
 async def delete_schedule_by_direction(
     request: Request,
     data: ScheduleDeleteByDirectionRequest,

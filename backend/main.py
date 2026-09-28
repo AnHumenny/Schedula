@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
@@ -76,16 +76,20 @@ app.add_middleware(
 )
 
 
-app.include_router(auth_router)
-app.include_router(users_router)
-app.include_router(directions_router)
-app.include_router(groups_router)
-app.include_router(profiles_router)
-app.include_router(teachers_router)
-app.include_router(disciplines_router)
-app.include_router(buildings_router)
-app.include_router(rooms_router)
-app.include_router(schedule_router)
+api_v1_router = APIRouter(prefix="/api/v1")
+
+api_v1_router.include_router(auth_router)
+api_v1_router.include_router(users_router)
+api_v1_router.include_router(directions_router)
+api_v1_router.include_router(groups_router)
+api_v1_router.include_router(profiles_router)
+api_v1_router.include_router(teachers_router)
+api_v1_router.include_router(disciplines_router)
+api_v1_router.include_router(buildings_router)
+api_v1_router.include_router(rooms_router)
+api_v1_router.include_router(schedule_router)
+
+app.include_router(api_v1_router)
 
 
 @app.get("/health", include_in_schema=False)
