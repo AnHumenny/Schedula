@@ -8,6 +8,10 @@ import type {
   Teacher, TeacherCreate,
   Building, Room, RoomCreate,
   ScheduleItem, ScheduleItemCreate,
+  ScheduleCopyByGroupRequest,
+  ScheduleCopyByDirectionRequest,
+  ScheduleDeleteByGroupRequest,
+  ScheduleDeleteByDirectionRequest,
   LoginRequest, LoginResponse,
 } from "./types";
 

@@ -17,6 +17,10 @@ export type {
   RoomCreate,
   ScheduleItem,
   ScheduleItemCreate,
+  ScheduleCopyByGroupRequest,
+  ScheduleCopyByDirectionRequest,
+  ScheduleDeleteByGroupRequest,
+  ScheduleDeleteByDirectionRequest,
   LessonType,
   LessonStatus,
 } from "../types";
