@@ -39,6 +39,11 @@ export const ScheduleOperationsPage: React.FC = () => {
   const groups = groupsQuery.data ?? [];
   const directions = directionsQuery.data ?? [];
 
+  const directionById = useMemo(
+    () => new Map(directions.map((d) => [d.id, d.name])),
+    [directions]
+  );
+
   const mutation = useMutation({
     mutationFn: async () => {
       const weeksNum = Number(weeks);
@@ -97,13 +102,25 @@ export const ScheduleOperationsPage: React.FC = () => {
     if (operation === "copy" && (!sourceStart || !sourceEnd)) return false;
     if (operation === "delete" && !startDate) return false;
     return true;
-  }, [operation, target, groupId, directionId, sourceStart, sourceEnd, startDate, weeks]);
+  }, [
+    operation,
+    target,
+    groupId,
+    directionId,
+    sourceStart,
+    sourceEnd,
+    startDate,
+    weeks,
+  ]);
 
   return (
     <div className="page">
       <PageHeader title="Операции с расписанием" />
 
-      <div className="card" style={{ display: "grid", gap: 12, maxWidth: 720 }}>
+      <div
+        className="card"
+        style={{ display: "grid", gap: 12, maxWidth: 720 }}
+      >
         <div style={{ display: "flex", gap: 16 }}>
           <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <input
@@ -152,10 +169,13 @@ export const ScheduleOperationsPage: React.FC = () => {
             value={groupId}
             onChange={setGroupId}
             placeholder="— выберите группу —"
-            options={groups.map((g) => ({
-              value: g.id,
-              label: g.name,
-            }))}
+            options={groups.map((g) => {
+              const dirName = directionById.get(g.direction_id);
+              return {
+                value: g.id,
+                label: dirName ? `${g.name} (${dirName})` : g.name,
+              };
+            })}
           />
         ) : (
           <Select
@@ -213,8 +233,8 @@ export const ScheduleOperationsPage: React.FC = () => {
         {error && <p className="error">Ошибка: {error.message}</p>}
         {mutation.isSuccess && (
           <p className="muted">
-            Готово: операция «{operation === "copy" ? "копирование" : "удаление"}»
-            выполнена.
+            Готово: операция «
+            {operation === "copy" ? "копирование" : "удаление"}» выполнена.
           </p>
         )}
 
