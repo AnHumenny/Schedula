@@ -46,3 +46,29 @@ export interface ScheduleItemUpdate {
   status?: LessonStatus;
   description?: string | null;
 }
+
+export interface ScheduleCopyByGroupRequest {
+  source_start: string;
+  source_end: string;
+  weeks_to_copy: number;
+  group_id: number;
+}
+
+export interface ScheduleCopyByDirectionRequest {
+  source_start: string;
+  source_end: string;
+  weeks_to_copy: number;
+  direction_id: number;
+}
+
+export interface ScheduleDeleteByGroupRequest {
+  start_date: string;
+  weeks_to_delete: number;
+  group_id: number;
+}
+
+export interface ScheduleDeleteByDirectionRequest {
+  start_date: string;
+  weeks_to_delete: number;
+  direction_id: number;
+}
