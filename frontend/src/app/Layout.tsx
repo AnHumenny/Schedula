@@ -8,6 +8,7 @@ const NAV = [
   { to: "/directions",               label: "Направления" },
   { to: "/schedule",                 label: "Расписание" },
   { to: "/schedule/calendar/admin/", label: "Календарь" },
+  { to: "/schedule/operations",      label: "Операции с расписанием" },
   { to: "/teachers",                 label: "Преподаватели" },
   { to: "/groups",                   label: "Группы" },
   { to: "/profiles",                 label: "Профили" },

@@ -7,7 +7,7 @@ import type {
 
 import { useAuthStore } from "../../features/auth/model/store";
 
-const BASE_URL: string = import.meta.env.VITE_API_URL || "/api";
+const BASE_URL: string = import.meta.env.VITE_API_URL || "/api/v1";
 
 const LOGIN_PATH = "/login";
 const PUBLIC_PATHS = ["/login", "/schedule/calendar"];

@@ -8,6 +8,10 @@ import type {
   Teacher, TeacherCreate,
   Building, Room, RoomCreate,
   ScheduleItem, ScheduleItemCreate,
+  ScheduleCopyByGroupRequest,
+  ScheduleCopyByDirectionRequest,
+  ScheduleDeleteByGroupRequest,
+  ScheduleDeleteByDirectionRequest,
   LoginRequest, LoginResponse,
 } from "./types";
 
@@ -106,25 +110,22 @@ export const roomsApi = {
 };
 
 export const scheduleApi = {
-  list: (params: { group_id?: number; teacher_id?: number; direction_id?: number; limit?: number; offset?: number;
-      } = {}) => {
+  list: (params: {group_id?: number; teacher_id?: number; direction_id?: number; limit?: number; offset?: number; } = {}) => {
     if (params.group_id) {
       return api.get<ScheduleItem[]>(`/schedule/group/${params.group_id}`).then((r) => r.data);
     }
     if (params.teacher_id) {
       return api.get<ScheduleItem[]>(`/schedule/teacher/${params.teacher_id}`).then((r) => r.data);
     }
-    return api.get<ScheduleItem[]>("/schedule/").then((r) => r.data);
+    return api.get<ScheduleItem[]>("/schedule/", { params }).then((r) => r.data);
   },
 
-  range: (params: { start: string; end: string; group_id?: number; teacher_id?: number; direction_id?: number;
-    }) =>
+  range: (params: {start: string; end: string; group_id?: number; teacher_id?: number; direction_id?: number;  }) =>
     api
       .get<ScheduleItem[]>("/schedule/range", { params })
       .then((r) => r.data),
 
-  upcoming: (params: { days?: number; group_id?: number; teacher_id?: number; direction_id?: number; limit?: number;
-    } = {}) =>
+  upcoming: (params: {days?: number; group_id?: number; teacher_id?: number; direction_id?: number; limit?: number; } = {}) =>
     api.get<ScheduleItem[]>("/schedule/upcoming", { params }).then((r) => r.data),
 
   get: (id: number) => api.get<ScheduleItem>(`/schedule/${id}`).then((r) => r.data),
@@ -133,6 +134,18 @@ export const scheduleApi = {
   update: (id: number, data: Partial<ScheduleItemCreate>) =>
     api.patch<ScheduleItem>(`/schedule/${id}`, data).then((r) => r.data),
   remove: (id: number) => api.delete(`/schedule/${id}`),
+
+  copyByGroup: (data: ScheduleCopyByGroupRequest) =>
+    api.post<void>("/schedule/copy/group", data).then((r) => r.data),
+
+  copyByDirection: (data: ScheduleCopyByDirectionRequest) =>
+    api.post<void>("/schedule/copy/copy_by_direction", data).then((r) => r.data),
+
+  deleteByGroup: (data: ScheduleDeleteByGroupRequest) =>
+    api.post<void>("/schedule/delete/group", data).then((r) => r.data),
+
+  deleteByDirection: (data: ScheduleDeleteByDirectionRequest) =>
+    api.post<void>("/schedule/delete/direction", data).then((r) => r.data),
 };
 
 export const authApi = {

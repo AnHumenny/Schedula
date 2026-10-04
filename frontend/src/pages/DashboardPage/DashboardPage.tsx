@@ -106,7 +106,7 @@ export const DashboardPage: React.FC = () => {
 
       <div className="card">
         <h3 style={{ fontSize: 16, fontWeight: 600, margin: "0 0 12px" }}>
-          Ближайшие занятия (7 дней)
+          Ближайшие занятия (текущий день)
         </h3>
 
         {upcoming.isLoading && <p className="muted">Загрузка…</p>}
