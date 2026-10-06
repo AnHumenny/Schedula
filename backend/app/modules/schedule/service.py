@@ -1,8 +1,10 @@
+import aiosmtplib
+
 from datetime import datetime, timezone, timedelta
 from typing import List
-
 from sqlalchemy import select
-
+from sqlalchemy.exc import SQLAlchemyError
+from app.modules.notifications.service import NotificationService, logger
 from app.modules.schedule.repository import ScheduleRepository
 from app.modules.schedule.schemas import (
     ScheduleItemCreate,
@@ -23,9 +25,11 @@ def _naive(dt: datetime) -> datetime:
 class ScheduleService:
     """Service for managing schedule items."""
 
-    def __init__(self, repo: ScheduleRepository):
+    def __init__(self, repo: ScheduleRepository, notifier: NotificationService):
         """Initialize the schedule service."""
+
         self.repo = repo
+        self.notifier = notifier
 
     @staticmethod
     def _to_read(item: ScheduleItem) -> ScheduleItemRead:
@@ -124,6 +128,12 @@ class ScheduleService:
         item.groups = await self._resolve_groups(data.group_ids)
 
         item = await self.repo.create(item)
+
+        try:
+            await self.notifier.notify_created(item)
+        except (aiosmtplib.SMTPException, SQLAlchemyError) as e:
+            logger.exception("Failed to notify created on schedule item %s: %s", item.id, e)
+
         return self._to_read(item)
 
 
@@ -165,6 +175,14 @@ class ScheduleService:
             setattr(item, field, value)
 
         item = await self.repo.update(item)
+
+        await self.repo.session.refresh(item, attribute_names=["updated_at"])
+
+        try:
+            await self.notifier.notify_updated(item)
+        except (aiosmtplib.SMTPException, SQLAlchemyError) as e:
+            logger.exception("Failed to notify updated on schedule item %s: %s", item.id, e)
+
         return self._to_read(item)
 
 
@@ -174,6 +192,12 @@ class ScheduleService:
         item = await self.repo.get_by_id(item_id)
         if not item:
             raise ValueError("Schedule item not found")
+
+        try:
+            await self.notifier.notify_deleted(item)
+        except (aiosmtplib.SMTPException, SQLAlchemyError) as e:
+            logger.exception("Failed to notify deleted on schedule item %s: %s", item.id, e)
+
         await self.repo.delete(item)
 
 
