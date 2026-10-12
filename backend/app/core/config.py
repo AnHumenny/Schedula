@@ -104,6 +104,8 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins_list(self) -> list[str] | None:
+        """Parse allowed origins from JSON or a comma-separated string."""
+
         raw = self.ALLOWED_ORIGINS.strip()
         if raw.startswith("["):
             try:

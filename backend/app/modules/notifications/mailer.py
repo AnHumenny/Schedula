@@ -11,7 +11,7 @@ class Mailer:
 
     @staticmethod
     async def send(to: str, subject: str, body: str) -> None:
-        """   """
+        """Send an email, or log it when SMTP is disabled."""
 
         if not settings.SMTP_ENABLED:
             logger.info("[mailer:disabled] to=%s subject=%r", to, subject)

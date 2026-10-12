@@ -22,6 +22,7 @@ SQL_FILE = (
 
 
 async def copy_schedule(session: AsyncSession) -> None:
+    """Execute the SQL statements that copy a group's schedule."""
     sql = SQL_FILE.read_text(encoding="utf-8")
 
     commands = [
@@ -35,6 +36,7 @@ async def copy_schedule(session: AsyncSession) -> None:
 
 
 async def test_copy() -> None:
+    """Run and commit the group schedule copy operation."""
     async with AsyncSessionLocal() as session:
         try:
             await copy_schedule(session)

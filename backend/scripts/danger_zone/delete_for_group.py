@@ -22,6 +22,7 @@ SQL_FILE = (
 
 
 async def delete_schedule(session: AsyncSession) -> None:
+    """Execute the SQL statements that delete a group's schedule."""
     sql = SQL_FILE.read_text(encoding="utf-8")
 
     commands = [
@@ -35,6 +36,7 @@ async def delete_schedule(session: AsyncSession) -> None:
 
 
 async def test_delete() -> None:
+    """Run and commit the group schedule deletion operation."""
     async with AsyncSessionLocal() as session:
         try:
             await delete_schedule(session)

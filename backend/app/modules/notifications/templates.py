@@ -3,7 +3,7 @@ from app.modules.notifications.constants import NotificationEvent
 
 
 def _fmt_dt(dt: datetime) -> str:
-    """   """
+    """Format a datetime for display in an email."""
     return dt.strftime("%d.%m.%Y %H:%M")
 
 

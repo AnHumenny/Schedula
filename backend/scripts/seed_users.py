@@ -20,16 +20,22 @@ ADMIN_PASSWORD_PLAIN = "admin123"
 
 
 async def get_user_by_email(session: AsyncSession, email: str) -> User | None:
+    """Find a user by email, or return None if no user matches."""
+
     q = select(User).where(User.email == email)
     return (await session.execute(q)).scalar_one_or_none()
 
 
 async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
+    """Find a user by username, or return None if no user matches."""
+
     q = select(User).where(User.username == username)
     return (await session.execute(q)).scalar_one_or_none()
 
 
 async def seed() -> None:
+    """Create the configured admin account if its identifiers are available."""
+
     async with AsyncSessionLocal() as session:
         existing_email = await get_user_by_email(session, ADMIN_EMAIL)
         if existing_email:

@@ -16,25 +16,29 @@ logger = logging.getLogger(__name__)
 
 
 class NotificationService:
-    """Service of notification. """
+    """Send schedule notifications to users in the affected groups."""
 
     def __init__(self, session: AsyncSession, mailer: Mailer):
+        """Initialize the service with a database session and mailer."""
         self.session = session
         self.mailer = mailer
 
 
     async def notify_created(self, item: ScheduleItem) -> None:
+        """Notify recipients that a schedule item was created."""
         await self._send(item, NotificationEvent.SCHEDULE_CREATED)
 
     async def notify_updated(self, item: ScheduleItem) -> None:
+        """Notify recipients that a schedule item was updated."""
         await self._send(item, NotificationEvent.SCHEDULE_UPDATED)
 
     async def notify_deleted(self, item: ScheduleItem) -> None:
+        """Notify recipients that a schedule item was deleted."""
         await self._send(item, NotificationEvent.SCHEDULE_DELETED)
 
 
     async def _recipients(self, item: ScheduleItem) -> list[User]:
-        """   """
+        """Get active users assigned to the schedule item's groups."""
 
         group_ids = [g.id for g in item.groups]
         if not group_ids:
@@ -49,7 +53,7 @@ class NotificationService:
 
 
     async def _send(self, item: ScheduleItem, event: NotificationEvent) -> None:
-        """  """
+        """Render and send a schedule notification to its recipients."""
 
         recipients = await self._recipients(item)
 
