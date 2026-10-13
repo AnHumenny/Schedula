@@ -126,6 +126,6 @@ class ScheduleItem(Base):
         DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
     )
 
-    teacher: Mapped["Teacher"] = relationship(back_populates="schedule_items")
-    discipline: Mapped["Discipline"] = relationship(back_populates="schedule_items")
-    room: Mapped["Room"] = relationship(back_populates="schedule_items")
+    teacher: Mapped["Teacher"] = relationship(back_populates="schedule_items", lazy="selectin")
+    discipline: Mapped["Discipline"] = relationship(back_populates="schedule_items", lazy="selectin")
+    room: Mapped["Room"] = relationship(back_populates="schedule_items", lazy="selectin")

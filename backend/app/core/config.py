@@ -85,6 +85,13 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    SMTP_ENABLED: bool = False
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    SMTP_FROM: str | None = "noreply@schedula.local"
+    SMTP_USE_TLS: bool = True
 
     @property
     def trusted_ips_list(self) -> List[str]:
@@ -97,6 +104,8 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins_list(self) -> list[str] | None:
+        """Parse allowed origins from JSON or a comma-separated string."""
+
         raw = self.ALLOWED_ORIGINS.strip()
         if raw.startswith("["):
             try:

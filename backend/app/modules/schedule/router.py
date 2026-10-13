@@ -163,6 +163,7 @@ async def copy_schedule_by_group(
     repo: ScheduleOperationsRepository = Depends(get_schedule_operation_repository),
     _: User = Depends(require_admin),
 ) -> None:
+    """Copy a group's schedule to the requested future weeks."""
     await repo.copy_by_group(
         source_start=data.source_start,
         source_end=data.source_end,
@@ -179,6 +180,7 @@ async def copy_schedule_by_direction(
     repo: ScheduleOperationsRepository = Depends(get_schedule_operation_repository),
     _: User = Depends(require_admin),
 ) -> None:
+    """Copy schedules for groups in a direction to future weeks."""
     await repo.copy_by_direction(
         source_start=data.source_start,
         source_end=data.source_end,
@@ -197,6 +199,7 @@ async def delete_schedule_by_group(
     ),
     _: User = Depends(require_admin),
 ) -> None:
+    """Delete a group's schedule for the requested number of weeks."""
     await repo.delete_by_group(
         start_date=data.start_date,
         weeks_to_delete=data.weeks_to_delete,
@@ -214,6 +217,7 @@ async def delete_schedule_by_direction(
     ),
     _: User = Depends(require_admin),
 ) -> None:
+    """Delete schedules for groups in a direction for the requested weeks."""
     await repo.delete_by_direction(
         start_date=data.start_date,
         weeks_to_delete=data.weeks_to_delete,

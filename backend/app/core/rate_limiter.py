@@ -12,6 +12,7 @@ from app.core.config import settings
 
 def get_real_ip(request: Request) -> str:
     """Real IP address, including proxies."""
+
     forwarded = request.headers.get("X-Forwarded-For")
     if forwarded:
         return forwarded.split(",")[0].strip()
@@ -25,6 +26,7 @@ def get_real_ip(request: Request) -> str:
 
 def is_trusted_ip(ip: str) -> bool:
     """Is the IP address included in the trusted list?"""
+
     for trusted in settings.trusted_ips_list:
         if "/" in trusted:
             try:
@@ -41,6 +43,7 @@ def is_trusted_ip(ip: str) -> bool:
 
 def get_user_key(request: Request) -> str:
     """Key for rate limiter: trusted / user:<id> / ip:<ip>."""
+
     client_ip = get_real_ip(request)
 
     if is_trusted_ip(client_ip):
@@ -55,6 +58,7 @@ def get_user_key(request: Request) -> str:
 
 class RateLimits:
     """Structure"""
+
     AUTH = settings.RATE_LIMIT_AUTH
     WRITE = settings.RATE_LIMIT_WRITE
     READ = settings.RATE_LIMIT_READ
@@ -85,6 +89,7 @@ def setup_rate_limiter(app) -> None:
 
     @app.exception_handler(RateLimitExceeded)
     async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+        """Return a JSON response when a request exceeds its rate limit."""
         return JSONResponse(
             status_code=429,
             content={
