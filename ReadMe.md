@@ -111,3 +111,12 @@ API Contracts: The frontend relies on the OpenAPI spec available at /docs.Licens
 MIT © 2026 Schedula license 
 text: LICENSE · https://opensource.org/licenses/MIT
 ```
+## Documentation
+
+- [Project overview](docs/overview.md)
+- [Frontend](docs/frontend.md)
+- [Architecture](docs/architecture.md)
+- [Database schema](docs/database.md)
+- [API reference](docs/api.md)
+- [Business logic](docs/business-logic.md)
+- [Deployment and configuration](docs/deployment.md)
